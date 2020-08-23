@@ -1,0 +1,35 @@
+/* Limpar Estilo */
+body {
+    margin: 0;
+}
+
+ul {
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* Estilos importantes */
+.slide-wrapper {
+    overflow: hidden;
+}
+
+.slide {
+    display: flex;
+}
+
+.slide li {
+    width: 80vw;
+    max-width: 800px;
+    margin: 0 20px;
+    flex-shrink: 0;
+}
+
+.slide {
+    transform: translate3d(-200px, 0px, 0px);
+}
