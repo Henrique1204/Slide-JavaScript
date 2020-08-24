@@ -6,6 +6,7 @@ export class Slide {
         this.slideWrapper = document.querySelector(slideWrapper);
         this.dist = { posicaoFinal: 0, comecoX: 0, movimento: 0 };
         this.classeAtivo = (classeAtivo) ? classeAtivo : "ativo";
+        this.eventoTroca = new Event("eventoTroca");
     }
 
     trasnsitar(ativo) {
@@ -104,6 +105,7 @@ export class Slide {
         this.slidesIndexNav(index);
         this.dist.posicaoFinal = slideAtivo.posicao;
         this.mudarClasseAtiva();
+        this.slideWrapper.dispatchEvent(this.eventoTroca);
     }
 
     ativarSlideAnterior() {
@@ -154,6 +156,12 @@ export class Slide {
 }
 
 export class SlideNav extends Slide {
+    constructor(slide, slideWrapper, classeAtivo) {
+        super(slide, slideWrapper, classeAtivo);
+
+        this.bindEventosControle();
+    }
+
     addFlecha(ante, prox) {
         this.anteElemento = document.querySelector(ante);
         this.proxElemento = document.querySelector(prox);
@@ -163,5 +171,46 @@ export class SlideNav extends Slide {
     addEventosFlecha() {
         this.anteElemento.addEventListener("click", this.ativarSlideAnterior);
         this.proxElemento.addEventListener("click", this.ativarSlideProximo);
+    }
+
+    criarControle() {
+        const controle = document.createElement("ul");
+        controle.dataset.controle = "slide";
+
+        this.slideArray.forEach((item, index) => {
+            controle.innerHTML += `<li><a href="#slide${index + 1}">${index + 1}</a></li>`;
+        });
+
+        this.slideWrapper.appendChild(controle);
+        return controle;
+    }
+
+    eventoControle(item, index) {
+        item.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            this.mudarSlide(index);
+        });
+
+        this.slideWrapper.addEventListener("eventoTroca", this.ativarControleItem);
+    }
+
+    ativarControleItem() {
+        this.controleArray.forEach((item) => item.classList.remove(this.classeAtivo));
+
+        this.controleArray[this.index.ativo].classList.add(this.classeAtivo);
+    }
+
+    addEventoControle(controlePersonalizado) {
+        this.controle = document.querySelector(controlePersonalizado) || this.criarControle();
+        this.controleArray = [...this.controle.children];
+
+        this.ativarControleItem();
+        this.controleArray.forEach(this.eventoControle);
+    }
+
+    bindEventosControle() {
+        this.eventoControle = this.eventoControle.bind(this);
+        this.ativarControleItem = this.ativarControleItem.bind(this);
     }
 }

@@ -45,3 +45,24 @@ img {
     opacity: 1;
     transform: scale(1);
 }
+
+[data-controle="slide"] {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+[data-controle="slide"] li a{
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 5px;
+    text-indent: -500px;
+    background-color: #FB5;
+    overflow: hidden;
+    display: block;
+}
+
+[data-controle="slide"] li:hover a, [data-controle="slide"] li.ativo a {
+    background-color: #E54;
+}
