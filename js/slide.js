@@ -56,7 +56,37 @@ export default class Slide {
         this.encerrar = this.encerrar.bind(this);
     }
 
+    posicionarSlide(slide) {
+        const margem = ( this.slideWrapper.offsetWidth - slide.offsetWidth ) / 2;
+        return -(slide.offsetLeft - margem);
+    }
+
+    configurarSlides() {
+        this.slideArray = [...this.slide.children].map((elemento) => {
+            const posicao = this.posicionarSlide(elemento);
+            return { elemento, posicao };
+        });
+    }
+
+    slidesIndexNav(index) {
+        const ultimo = this.slideArray.length;
+
+        this.index = {
+            ante: (index) ? index - 1 : undefined,
+            ativo: index,
+            prox: (index === ultimo) ? undefined : index + 1
+        };
+    }
+
+    mudarSlide(index) {
+        const slideAtivo = this.slideArray[index];
+        this.moverSlide(slideAtivo.posicao);
+        this.slidesIndexNav(index);
+        this.dist.posicaoFinal = slideAtivo.posicao;
+    }
+
     iniciar() {
+        this.configurarSlides();
         this.bindMetodos();
 
         if (this.slide && this.slideWrapper) {
