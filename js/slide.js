@@ -16,25 +16,38 @@ export default class Slide {
     }
 
     comecar(evento) {
-        evento.preventDefault();
+        let tipoMovimento;
 
-        this.dist.comecoX = evento.clientX;
-        this.slideWrapper.addEventListener("mousemove", this.mover);
+        if (evento.type === "mousedown") {
+            evento.preventDefault();
+            this.dist.comecoX = evento.clientX;
+            tipoMovimento = "mousemove";
+        } else {
+            this.dist.comecoX = evento.changedTouches[0].clientX;
+            tipoMovimento = "touchmove";
+        }
+
+        this.slideWrapper.addEventListener(tipoMovimento, this.mover);
     }
 
     mover(evento) {
-        const posicaoFinal = this.atualizarPosicao(evento.clientX);
+        const posicaoPonteiro = (evento.type === "mousemove") ? evento.clientX : evento.changedTouches[0].clientX;
+        const posicaoFinal = this.atualizarPosicao(posicaoPonteiro);
         this.moverSlide(posicaoFinal);
     }
 
     encerrar(evento) {
-        this.slideWrapper.removeEventListener("mousemove", this.mover);
+        const moveType = (evento.type === "mouseup") ? "mousemove" : "touchmove";
+        this.slideWrapper.removeEventListener(moveType, this.mover);
         this.dist.posicaoFinal = this.dist.posicaoMovida;
     }
 
     addEventosSlide() {
         this.slideWrapper.addEventListener("mousedown", this.comecar);
         this.slideWrapper.addEventListener("mouseup", this.encerrar);
+
+        this.slideWrapper.addEventListener("touchstart", this.comecar);
+        this.slideWrapper.addEventListener("touchend", this.encerrar);
     }
 
     bindMetodos() {
