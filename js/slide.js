@@ -5,6 +5,10 @@ export default class Slide {
         this.dist = { posicaoFinal: 0, comecoX: 0, movimento: 0 };
     }
 
+    trasnsitar(ativo) {
+        this.slide.style.transition = (ativo) ? "transform 0.3s" : "";
+    }
+
     moverSlide(distX) {
         this.dist.posicaoMovida = distX;
         this.slide.style.transform = `translate3D(${distX}px, 0, 0)`;
@@ -28,6 +32,7 @@ export default class Slide {
         }
 
         this.slideWrapper.addEventListener(tipoMovimento, this.mover);
+        this.trasnsitar(false);
     }
 
     mover(evento) {
@@ -36,10 +41,23 @@ export default class Slide {
         this.moverSlide(posicaoFinal);
     }
 
+    mudarAoEncerrar() {
+        if (this.dist.movimento > 120 && this.index.prox !== undefined) {
+            this.ativarSlideProximo();
+        } else if (this.dist.movimento < -120 && this.index.ante !== undefined) {
+            this.ativarSlideAnterior();
+        } else {
+            this.mudarSlide(this.index.ativo);
+        }
+    }
+
     encerrar(evento) {
         const moveType = (evento.type === "mouseup") ? "mousemove" : "touchmove";
         this.slideWrapper.removeEventListener(moveType, this.mover);
         this.dist.posicaoFinal = this.dist.posicaoMovida;
+
+        this.trasnsitar(true);
+        this.mudarAoEncerrar();
     }
 
     addEventosSlide() {
@@ -69,12 +87,12 @@ export default class Slide {
     }
 
     slidesIndexNav(index) {
-        const ultimo = this.slideArray.length;
+        const ultimo = this.slideArray.length - 1;
 
         this.index = {
             ante: (index) ? index - 1 : undefined,
             ativo: index,
-            prox: (index === ultimo) ? undefined : index + 1
+            prox: (index === ultimo) ?  undefined : index + 1
         };
     }
 
@@ -85,9 +103,22 @@ export default class Slide {
         this.dist.posicaoFinal = slideAtivo.posicao;
     }
 
+    ativarSlideAnterior() {
+        if (this.index.ante !== undefined) {
+            this.mudarSlide(this.index.ante);
+        }
+    }
+
+    ativarSlideProximo() {
+        if (this.index.prox !== undefined) {
+            this.mudarSlide(this.index.prox);
+        }
+    }
+
     iniciar() {
         this.configurarSlides();
         this.bindMetodos();
+        this.trasnsitar(true);
 
         if (this.slide && this.slideWrapper) {
             this.addEventosSlide();
