@@ -1,6 +1,6 @@
 import debounce from "./debounce.js";
 
-export default class Slide {
+export class Slide {
     constructor(slide, slideWrapper, classeAtivo) {
         this.slide = document.querySelector(slide);
         this.slideWrapper = document.querySelector(slideWrapper);
@@ -98,7 +98,7 @@ export default class Slide {
         this.slideArray[this.index.ativo].elemento.classList.add(this.classeAtivo);
     }
 
-    mudarSlide(index) {
+    mudarSlide(index = 0) {
         const slideAtivo = this.slideArray[index];
         this.moverSlide(slideAtivo.posicao);
         this.slidesIndexNav(index);
@@ -133,7 +133,9 @@ export default class Slide {
         this.comecar = this.comecar.bind(this);
         this.mover = this.mover.bind(this);
         this.encerrar = this.encerrar.bind(this);
-        debounce(this.onResize =this.onResize.bind(this), 200)
+        debounce(this.onResize = this.onResize.bind(this), 200);
+        this.ativarSlideAnterior = this.ativarSlideAnterior.bind(this);
+        this.ativarSlideProximo = this.ativarSlideProximo.bind(this);
     }
 
     iniciar() {
@@ -144,8 +146,22 @@ export default class Slide {
 
         if (this.slide && this.slideWrapper) {
             this.addEventosSlide();
+            this.mudarSlide();
         }
 
         return this;
+    }
+}
+
+export class SlideNav extends Slide {
+    addFlecha(ante, prox) {
+        this.anteElemento = document.querySelector(ante);
+        this.proxElemento = document.querySelector(prox);
+        this.addEventosFlecha();
+    }
+
+    addEventosFlecha() {
+        this.anteElemento.addEventListener("click", this.ativarSlideAnterior);
+        this.proxElemento.addEventListener("click", this.ativarSlideProximo);
     }
 }
