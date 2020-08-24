@@ -1,6 +1,5 @@
-import Slide from "./slide.js";
+import { SlideNav } from "./slide.js";
 
-const slide = new Slide(".slide", ".slide-wrapper");
-slide.iniciar();
-
-slide.mudarSlide(0);
+const slideNav = new SlideNav(".slide", ".slide-wrapper");
+slideNav.iniciar();
+slideNav.addFlecha(".ante", ".prox");
