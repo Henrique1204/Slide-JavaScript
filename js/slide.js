@@ -1,8 +1,11 @@
+import debounce from "./debounce.js";
+
 export default class Slide {
-    constructor(slide, slideWrapper) {
+    constructor(slide, slideWrapper, classeAtivo) {
         this.slide = document.querySelector(slide);
         this.slideWrapper = document.querySelector(slideWrapper);
         this.dist = { posicaoFinal: 0, comecoX: 0, movimento: 0 };
+        this.classeAtivo = (classeAtivo) ? classeAtivo : "ativo";
     }
 
     trasnsitar(ativo) {
@@ -68,12 +71,6 @@ export default class Slide {
         this.slideWrapper.addEventListener("touchend", this.encerrar);
     }
 
-    bindMetodos() {
-        this.comecar = this.comecar.bind(this);
-        this.mover = this.mover.bind(this);
-        this.encerrar = this.encerrar.bind(this);
-    }
-
     posicionarSlide(slide) {
         const margem = ( this.slideWrapper.offsetWidth - slide.offsetWidth ) / 2;
         return -(slide.offsetLeft - margem);
@@ -96,11 +93,17 @@ export default class Slide {
         };
     }
 
+    mudarClasseAtiva() {
+        this.slideArray.forEach((item) => item.elemento.classList.remove(this.classeAtivo));
+        this.slideArray[this.index.ativo].elemento.classList.add(this.classeAtivo);
+    }
+
     mudarSlide(index) {
         const slideAtivo = this.slideArray[index];
         this.moverSlide(slideAtivo.posicao);
         this.slidesIndexNav(index);
         this.dist.posicaoFinal = slideAtivo.posicao;
+        this.mudarClasseAtiva();
     }
 
     ativarSlideAnterior() {
@@ -115,10 +118,29 @@ export default class Slide {
         }
     }
 
+    onResize() {
+        setTimeout(() => {
+            this.configurarSlides();
+            this.mudarSlide(this.index.ativo);
+        }, 800);
+    }
+
+    addEventoResize() {
+        window.addEventListener("resize", this.onResize);
+    }
+
+    bindMetodos() {
+        this.comecar = this.comecar.bind(this);
+        this.mover = this.mover.bind(this);
+        this.encerrar = this.encerrar.bind(this);
+        debounce(this.onResize =this.onResize.bind(this), 200)
+    }
+
     iniciar() {
         this.configurarSlides();
         this.bindMetodos();
         this.trasnsitar(true);
+        this.addEventoResize();
 
         if (this.slide && this.slideWrapper) {
             this.addEventosSlide();
