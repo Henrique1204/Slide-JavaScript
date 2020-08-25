@@ -66,3 +66,47 @@ img {
 [data-controle="slide"] li:hover a, [data-controle="slide"] li.ativo a {
     background-color: #E54;
 }
+
+.controle-personalizado {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.controle-personalizado li {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 2px 20px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    opacity: 0.8;
+    transform: scale(0.8);
+    transition: 0.3s;
+}
+
+.controle-personalizado li.ativo {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.nav-flecha {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.nav-flecha button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    background: #FB5 url("../img/arrow.svg") center no-repeat;
+    cursor: pointer;
+}
+
+.nav-flecha button.ante {
+    transform: rotate(-180deg);
+}
